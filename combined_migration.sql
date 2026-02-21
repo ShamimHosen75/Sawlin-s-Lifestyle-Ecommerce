@@ -293,14 +293,14 @@ CREATE TRIGGER update_store_settings_updated_at BEFORE UPDATE ON public.store_se
 
 -- Insert default store settings
 INSERT INTO public.store_settings (key, value) VALUES
-    ('store_name', 'Sawlins Clothing'),
-    ('store_email', 'hello@sawlinsclothing.com'),
-    ('store_phone', '+880 1234 567890'),
-    ('store_address', '123 Fashion Street, Gulshan-1, Dhaka 1212, Bangladesh'),
+    ('store_name', 'Sawlin''s Lifestyle'),
+    ('store_email', 'info@sawlinslifestyle.com'),
+    ('store_phone', '+8801622823164'),
+    ('store_address', 'Uttar Kauwakuri (UK), Madaripur Sadar, Madaripur, BD'),
     ('shipping_inside_dhaka', '60'),
     ('shipping_outside_dhaka', '120'),
-    ('site_title', 'Sawlins Clothing - Premium Fashion for Everyone'),
-    ('meta_description', 'Discover premium clothing at Sawlins Clothing. Shop men''s, women''s, and kids'' fashion with fast delivery across Bangladesh.');
+    ('site_title', 'Sawlin''s Lifestyle - Premium Fashion for Everyone'),
+    ('meta_description', 'Discover premium clothing at Sawlin''s Lifestyle. Shop men''s, women''s, and kids'' fashion with fast delivery across Bangladesh.');
 
 -- Insert default categories
 INSERT INTO public.categories (name, slug, image) VALUES

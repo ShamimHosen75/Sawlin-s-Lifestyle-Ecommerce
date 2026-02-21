@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, Search, User, Globe } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
-import { useSiteSettings } from '@/contexts/SiteSettingsContext';
-import { useStoreSettings } from '@/hooks/useStoreSettings';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useCart } from '@/contexts/CartContext';
+import { useSiteSettings } from '@/contexts/SiteSettingsContext';
+import { useStoreSettings } from '@/hooks/useStoreSettings';
+import { Globe, Menu, Search, ShoppingBag, User } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 export function Header() {
   const { totalItems } = useCart();
@@ -20,7 +20,7 @@ export function Header() {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const storeName = storeSettings?.store_name || 'STORE';
+  const storeName = storeSettings?.store_name || "Sawlin's Lifestyle";
   const storeLogo = storeSettings?.store_logo || '';
 
   const navigation = [

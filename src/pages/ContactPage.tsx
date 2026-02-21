@@ -43,7 +43,7 @@ export default function ContactPage() {
   };
 
   const storePhone = '+8801622823164';
-  const storeEmail = 'info@sawlinsclothing.com';
+  const storeEmail = 'info@sawlinslifestyle.com';
   const storeAddress = 'Uttar Kauwakuri (UK)';
   const storeCity = 'Madaripur Sadar, Madaripur, BD';
   const whatsappNumber = '+8801622823164';

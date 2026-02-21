@@ -20,7 +20,7 @@ export default function AboutPage() {
         title="About Us"
         badge="Crafted with Passion"
         badgeIcon={Heart}
-        description="From fabric selection to final stitch, every piece at Sawlins Clothing is curated with care. We're on a mission to make premium fashion accessible to everyone."
+        description="From fabric selection to final stitch, every piece at Sawlin's Lifestyle is curated with care. We're on a mission to make premium fashion accessible to everyone."
       />
 
       {/* ═══ Who We Are ═══ */}
@@ -59,14 +59,14 @@ export default function AboutPage() {
               Curating Premium Fashion <br />Since Day One
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Sawlins Clothing started with a simple vision — to make stylish,
+              Sawlin's Lifestyle started with a simple vision — to make stylish,
               high-quality clothing accessible to everyone in Bangladesh. From
               everyday essentials to statement pieces, we handpick each item to
               ensure it meets our standards for fabric quality, fit, and design.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-6">
               Whether you're shopping for men's formals, women's fashion, baby
-              outfits, or trendy accessories, Sawlins is your one-stop
+              outfits, or trendy accessories, Sawlin's is your one-stop
               destination. We partner with trusted manufacturers who share our
               commitment to craftsmanship.
             </p>
@@ -89,7 +89,7 @@ export default function AboutPage() {
               Why Choose Us
             </span>
             <h2 className="text-2xl md:text-3xl font-bold mt-3 mb-3">
-              The Sawlins Difference
+              The Sawlin's Difference
             </h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
               We're not just another clothing store. Here's what sets us apart.

@@ -48,10 +48,10 @@ export function Footer() {
     );
   }
 
-  const storeName = storeSettings?.store_name || 'Black Beauty';
+  const storeName = storeSettings?.store_name || "Sawlin's Lifestyle";
   const storeTagline = storeSettings?.store_tagline || t('home.heroSubtitle');
   const storePhone = '+8801622823164';
-  const storeEmail = 'info@blackbeautybd.com';
+  const storeEmail = 'info@sawlinslifestyle.com';
   const storeAddress = 'Uttar Kauwakuri (UK)';
   const storeCity = 'Madaripur Sadar, Madaripur, BD';
   const footerText = storeSettings?.footer_text || '';
@@ -71,7 +71,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <h4 className="font-semibold mb-4">About Us</h4>
             <p className="text-primary-foreground/80 text-sm mb-6 max-w-xs">
-              Black Beauty is a leading online e-commerce brand in Bangladesh, specializing in premium skincare and haircare solutions.
+              Sawlin's Lifestyle is a premium fashion brand in Bangladesh, offering high-quality clothing and lifestyle products for everyone.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -178,7 +178,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-primary-foreground/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-primary-foreground/60">
-              {footerText || `© ${new Date().getFullYear()} Black Beauty. ${t('footer.allRightsReserved')}.`}
+              {footerText || `© ${new Date().getFullYear()} Sawlin's Lifestyle. ${t('footer.allRightsReserved')}.`}
             </p>
             <div className="flex gap-6">
               <Link
