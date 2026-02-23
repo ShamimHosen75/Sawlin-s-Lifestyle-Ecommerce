@@ -1,40 +1,40 @@
-import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, MoreHorizontal } from 'lucide-react';
-import { useProducts, useCategories, useCreateProduct, useUpdateProduct, useDeleteProduct, Product, Category } from '@/hooks/useShopData';
+import { MultiImageUpload } from '@/components/admin/ImageUpload';
 import { ProductVariantManager } from '@/components/admin/ProductVariantManager';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from '@/components/ui/dialog';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from '@/components/ui/select';
+import { Product, useCategories, useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct } from '@/hooks/useShopData';
+import { Edit, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { MultiImageUpload } from '@/components/admin/ImageUpload';
 
 const generateSlug = (name: string) => {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -400,9 +400,10 @@ export default function AdminProducts() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <img
-                          src={product.images[0] || '/placeholder.svg'}
+                          src={product.images?.[0] || '/placeholder.svg'}
                           alt={product.name}
                           className="w-12 h-12 rounded-lg object-cover bg-secondary"
+                          onError={(e) => { e.currentTarget.src = '/placeholder.svg'; }}
                         />
                         <span className="font-medium line-clamp-1">{product.name}</span>
                       </div>

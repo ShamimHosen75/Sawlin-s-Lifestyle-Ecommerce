@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, Zap, Loader2 } from 'lucide-react';
-import { Product, Category } from '@/hooks/useShopData';
+import { WishlistButton } from '@/components/products/WishlistButton';
+import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useSiteSettings } from '@/contexts/SiteSettingsContext';
-import { Button } from '@/components/ui/button';
-import { WishlistButton } from '@/components/products/WishlistButton';
+import { Category, Product } from '@/hooks/useShopData';
+import { ImageOff, Loader2, ShoppingBag, Zap } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+
+const PLACEHOLDER_SVG = '/placeholder.svg';
 
 interface ProductCardProps {
   product: Product & { category?: Category | null };
@@ -18,6 +20,20 @@ export function ProductCard({ product }: ProductCardProps) {
   const navigate = useNavigate();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isBuyingNow, setIsBuyingNow] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const imgSrc = product.images?.[0] || PLACEHOLDER_SVG;
+
+  const handleImgLoad = useCallback(() => {
+    setImgLoaded(true);
+    setImgError(false);
+  }, []);
+
+  const handleImgError = useCallback(() => {
+    setImgLoaded(true);
+    setImgError(true);
+  }, []);
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
       name: product.name,
       price: product.price,
       salePrice: product.sale_price ?? undefined,
-      image: product.images[0] || '/placeholder.svg',
+      image: imgSrc,
       quantity: 1,
       stock: product.stock,
     });
@@ -68,7 +84,7 @@ export function ProductCard({ product }: ProductCardProps) {
       name: product.name,
       price: product.price,
       salePrice: product.sale_price ?? undefined,
-      image: product.images[0] || '/placeholder.svg',
+      image: imgSrc,
       quantity: 1,
       stock: product.stock,
     });
@@ -86,10 +102,28 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link to={`/product/${product.slug}`} className="block flex-1">
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-secondary rounded-t-xl">
+          {/* Loading skeleton */}
+          {!imgLoaded && !imgError && (
+            <div className="absolute inset-0 bg-secondary animate-pulse flex items-center justify-center z-[1]">
+              <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
+            </div>
+          )}
+
+          {/* Error fallback placeholder */}
+          {imgError && (
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary to-muted flex flex-col items-center justify-center gap-2 z-[1]">
+              <ImageOff className="h-10 w-10 text-muted-foreground/50" />
+              <span className="text-xs text-muted-foreground/60 text-center px-4 line-clamp-2">{product.name}</span>
+            </div>
+          )}
+
           <img
-            src={product.images[0] || '/placeholder.svg'}
+            src={imgSrc}
             alt={product.name}
-            className="product-image-zoom w-full h-full object-cover"
+            className={`product-image-zoom w-full h-full object-cover transition-opacity duration-300 ${imgError ? 'opacity-0 absolute' : imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={handleImgLoad}
+            onError={handleImgError}
+            loading="lazy"
           />
 
           {/* Badges */}

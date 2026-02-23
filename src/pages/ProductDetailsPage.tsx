@@ -1,21 +1,21 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Minus, Plus, ShoppingBag, Zap, Check, Loader2 } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { ProductCard } from '@/components/products/ProductCard';
 import { VariantSelector } from '@/components/products/VariantSelector';
 import { WishlistButton } from '@/components/products/WishlistButton';
 import { ReviewForm } from '@/components/reviews/ReviewForm';
 import { ReviewList } from '@/components/reviews/ReviewList';
-import { useProduct, useRelatedProducts } from '@/hooks/useShopData';
-import { useProductVariants, ProductVariant } from '@/hooks/useVariants';
-import { useProductReviews } from '@/hooks/useProductReviews';
+import { Button } from '@/components/ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { useSiteSettings } from '@/contexts/SiteSettingsContext';
-import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { trackViewContent, trackAddToCart } from '@/lib/facebook-pixel';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useProductReviews } from '@/hooks/useProductReviews';
+import { useProduct, useRelatedProducts } from '@/hooks/useShopData';
+import { ProductVariant, useProductVariants } from '@/hooks/useVariants';
+import { trackAddToCart, trackViewContent } from '@/lib/facebook-pixel';
+import { Check, ChevronRight, ImageOff, Loader2, Minus, Plus, ShoppingBag, Zap } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function ProductDetailsPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -32,7 +32,25 @@ export default function ProductDetailsPage() {
   const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const [mainImgLoaded, setMainImgLoaded] = useState(false);
+  const [mainImgError, setMainImgError] = useState(false);
   const isMobile = useIsMobile();
+
+  // Reset image load state when selected image changes
+  useEffect(() => {
+    setMainImgLoaded(false);
+    setMainImgError(false);
+  }, [selectedImage]);
+
+  const handleMainImgLoad = useCallback(() => {
+    setMainImgLoaded(true);
+    setMainImgError(false);
+  }, []);
+
+  const handleMainImgError = useCallback(() => {
+    setMainImgLoaded(true);
+    setMainImgError(true);
+  }, []);
 
   // Track ViewContent when product loads
   useEffect(() => {
@@ -118,7 +136,7 @@ export default function ProductDetailsPage() {
       salePrice: product.sale_price
         ? product.sale_price + (selectedVariant?.price_adjustment || 0)
         : undefined,
-      image: product.images[0] || '/placeholder.svg',
+      image: product.images?.[0] || '/placeholder.svg',
       quantity,
       stock: effectiveStock,
       variantId: selectedVariant?.id,
@@ -205,21 +223,38 @@ export default function ProductDetailsPage() {
           {/* Gallery */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="aspect-square rounded-2xl overflow-hidden bg-secondary">
+            <div className="aspect-square rounded-2xl overflow-hidden bg-secondary relative">
+              {/* Loading skeleton */}
+              {!mainImgLoaded && !mainImgError && (
+                <div className="absolute inset-0 bg-secondary animate-pulse flex items-center justify-center z-[1]">
+                  <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
+                </div>
+              )}
+
+              {/* Error fallback */}
+              {mainImgError && (
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary to-muted flex flex-col items-center justify-center gap-3 z-[1]">
+                  <ImageOff className="h-16 w-16 text-muted-foreground/50" />
+                  <span className="text-sm text-muted-foreground/60 text-center px-8">{product.name}</span>
+                </div>
+              )}
+
               <img
-                src={product.images[selectedImage] || '/placeholder.svg'}
+                src={product.images?.[selectedImage] || '/placeholder.svg'}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover transition-opacity duration-300 ${mainImgError ? 'opacity-0 absolute' : mainImgLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoad={handleMainImgLoad}
+                onError={handleMainImgError}
               />
             </div>
             {/* Thumbnails */}
-            {product.images.length > 1 && (
+            {product.images?.length > 1 && (
               <div className="flex gap-3">
                 {product.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                    className={`w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors relative bg-secondary ${
                       selectedImage === index
                         ? 'border-accent'
                         : 'border-transparent'
@@ -229,6 +264,17 @@ export default function ProductDetailsPage() {
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        if (target.parentElement) {
+                          target.parentElement.classList.add('flex', 'items-center', 'justify-center');
+                          const icon = document.createElement('div');
+                          icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground/40"><line x1="2" x2="22" y1="2" y2="22"/><path d="M10.41 10.41a2 2 0 1 1-2.83-2.83"/><line x1="13.5" x2="6" y1="13.5" y2="21"/><line x1="18" x2="21" y1="12" y2="15"/><path d="M3.59 3.59A1.99 1.99 0 0 0 3 5v14a2 2 0 0 0 2 2h14c.55 0 1.052-.22 1.41-.59"/><path d="M21 15V5a2 2 0 0 0-2-2H9"/></svg>';
+                          target.parentElement.appendChild(icon);
+                        }
+                      }}
+                      loading="lazy"
                     />
                   </button>
                 ))}
