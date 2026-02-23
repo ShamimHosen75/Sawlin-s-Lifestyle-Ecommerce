@@ -1,8 +1,8 @@
 import {
-    categories as mockCategories,
-    products as mockProducts,
-    reviews as mockReviews,
-    sliderSlides as mockSliderSlides,
+  categories as mockCategories,
+  products as mockProducts,
+  reviews as mockReviews,
+  sliderSlides as mockSliderSlides,
 } from '@/data/products';
 import { supabase } from '@/integrations/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -65,6 +65,7 @@ export interface Review {
 // Convert camelCase mock data to snake_case Supabase format
 
 const now = new Date().toISOString();
+const MIN_SECTION_PRODUCTS = 4;
 
 function adaptMockCategories(): Category[] {
   return mockCategories.map((c) => ({
@@ -143,10 +144,10 @@ export const useProducts = () => {
           .select('*, category:categories(*)')
           .eq('is_active', true)
           .order('created_at', { ascending: false })
-          .limit(20);
+          .limit(50);
         
         if (error) throw error;
-        if (data && data.length > 0) return data as (Product & { category: Category | null })[];
+        if (data && data.length >= MIN_SECTION_PRODUCTS) return data as (Product & { category: Category | null })[];
       } catch (e) {
         console.warn('Supabase products fetch failed, using mock data:', e);
       }
@@ -188,15 +189,16 @@ export const useFeaturedProducts = () => {
           .from('products')
           .select('*, category:categories(*)')
           .eq('is_active', true)
+          .eq('is_featured', true)
           .order('created_at', { ascending: false })
           .limit(12);
         
         if (error) throw error;
-        if (data && data.length > 0) return data as (Product & { category: Category | null })[];
+        if (data && data.length >= MIN_SECTION_PRODUCTS) return data as (Product & { category: Category | null })[];
       } catch (e) {
         console.warn('Supabase featured products fetch failed, using mock data:', e);
       }
-      return adaptMockProducts().slice(0, 12);
+      return adaptMockProducts().filter((p) => p.is_featured).slice(0, 12);
     },
   });
 };
@@ -213,7 +215,7 @@ export const useBestSellers = () => {
           .order('created_at', { ascending: false });
         
         if (error) throw error;
-        if (data && data.length > 0) {
+        if (data && data.length >= MIN_SECTION_PRODUCTS) {
           return data.map((p: any) => ({
             ...p,
             product_variants: undefined,
@@ -240,7 +242,7 @@ export const useNewArrivals = () => {
           .order('created_at', { ascending: false });
         
         if (error) throw error;
-        if (data && data.length > 0) {
+        if (data && data.length >= MIN_SECTION_PRODUCTS) {
           return data.map((p: any) => ({
             ...p,
             product_variants: undefined,
@@ -275,7 +277,7 @@ export const useProductsByCategory = (categorySlug: string) => {
             .order('created_at', { ascending: false });
           
           if (error) throw error;
-          if (data && data.length > 0) {
+          if (data && data.length >= MIN_SECTION_PRODUCTS) {
             return data.map((p: any) => ({
               ...p,
               product_variants: undefined,

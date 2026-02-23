@@ -95,7 +95,85 @@ BEGIN
      'Hand-woven leather belt with brushed metal buckle.',
      'Add a sophisticated touch to any outfit with this hand-woven leather belt. Crafted from genuine leather strips, featuring a brushed antique metal buckle. The woven design allows for flexible sizing. Perfect for both formal and casual wear.',
      ARRAY['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80', 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=800&q=80'],
-     false, true, false, true);
+     false, true, false, true),
 
-    RAISE NOTICE 'Successfully inserted 12 sample clothing products!';
+    -- Men's Fashion (additional)
+    ('Tailored Wool Blazer', 'tailored-wool-blazer', 3499, 2799, mens_fashion_id, 18, 'MW-BLZ-004',
+     'Slim-fit wool blend blazer with notch lapels.',
+     'Command attention with this impeccably tailored wool blend blazer. Features notch lapels, a two-button front, functional sleeve buttons, and a fully lined interior. Perfect for business meetings, dinners, and formal events.',
+     ARRAY['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=800&q=80'],
+     false, true, true, true),
+
+    ('Classic Polo T-Shirt', 'classic-polo-tshirt', 899, NULL, mens_fashion_id, 70, 'MW-POL-005',
+     'Breathable pique cotton polo with contrast collar.',
+     'A timeless polo shirt crafted from premium pique cotton. Features a ribbed collar and cuffs, two-button placket, and side vents for comfortable movement. Available in six versatile colors.',
+     ARRAY['https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=800&q=80', 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&q=80'],
+     true, false, false, true),
+
+    ('Stretch Jogger Pants', 'stretch-jogger-pants', 1199, 949, mens_fashion_id, 40, 'MW-JOG-006',
+     'Tapered jogger pants with elastic cuffs and drawstring waist.',
+     'Upgrade your casual wardrobe with these tapered jogger pants. Made from a soft cotton-polyester blend with four-way stretch, featuring an elastic drawstring waist, zippered pockets, and ribbed ankle cuffs.',
+     ARRAY['https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=800&q=80', 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80'],
+     false, true, false, true),
+
+    -- Women's Fashion (additional)
+    ('Embroidered Cotton Kurti', 'embroidered-cotton-kurti', 1299, 1049, womens_fashion_id, 30, 'WW-KRT-004',
+     'Hand-embroidered cotton kurti with mirror work details.',
+     'This stunning cotton kurti showcases intricate hand embroidery and delicate mirror work. Features a mandarin collar, three-quarter sleeves, and side slits for easy movement. Pair with leggings or palazzo pants for a complete look.',
+     ARRAY['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800&q=80', 'https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=800&q=80'],
+     true, false, true, true),
+
+    -- Baby's Fashion (additional)
+    ('Toddler Canvas Sneakers', 'toddler-canvas-sneakers', 699, 549, babys_fashion_id, 45, 'KW-SNK-004',
+     'Adorable canvas sneakers with easy velcro straps.',
+     'These cute and practical canvas sneakers are designed for little adventurers. Feature easy-to-use velcro straps, cushioned insoles, and non-slip rubber soles. Available in fun colors and patterns that kids love.',
+     ARRAY['https://images.unsplash.com/photo-1555009306-30a937a36929?w=800&q=80', 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=800&q=80'],
+     false, true, true, true),
+
+    -- Casual Wear (additional)
+    ('Graphic Print Hoodie', 'graphic-print-hoodie', 1799, 1399, casual_wear_id, 35, 'CW-HOD-001',
+     'Oversized graphic hoodie in heavyweight French terry.',
+     'Stay cozy and stylish with this oversized graphic hoodie. Made from premium heavyweight French terry cotton, featuring a bold chest print, kangaroo pocket, drawstring hood, and ribbed trims. Perfect for layering on cool days.',
+     ARRAY['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80', 'https://images.unsplash.com/photo-1578768079052-aa76e52ff62e?w=800&q=80'],
+     true, false, true, true),
+
+    ('Cotton Cargo Shorts', 'cotton-cargo-shorts', 999, NULL, casual_wear_id, 50, 'CW-SHR-002',
+     'Relaxed-fit cargo shorts with multiple utility pockets.',
+     'Built for adventure and everyday comfort, these cargo shorts feature a relaxed fit, multiple utility pockets with button flaps, and a durable cotton twill construction. Belt loops and zip-fly closure complete the look.',
+     ARRAY['https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=800&q=80', 'https://images.unsplash.com/photo-1571455786673-9d9d6c194f90?w=800&q=80'],
+     false, true, false, true),
+
+    -- Formal Wear
+    ('Pinstripe Three-Piece Suit', 'pinstripe-three-piece-suit', 7999, 6499, formal_wear_id, 10, 'FW-SUT-001',
+     'Classic pinstripe three-piece suit in navy wool blend.',
+     'Make a statement with this classic pinstripe three-piece suit. Crafted from fine wool blend fabric, includes a single-breasted jacket with peak lapels, matching waistcoat, and flat-front trousers. Fully lined for a polished finish.',
+     ARRAY['https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80', 'https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?w=800&q=80'],
+     false, true, true, true),
+
+    ('French Cuff Dress Shirt', 'french-cuff-dress-shirt', 1899, NULL, formal_wear_id, 30, 'FW-DSH-002',
+     'Crisp white dress shirt with French cuffs and spread collar.',
+     'Elevate your formal wardrobe with this immaculate white dress shirt. Features a spread collar, French cuffs for cufflinks, a slim fit silhouette, and wrinkle-resistant premium cotton construction. A boardroom essential.',
+     ARRAY['https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&q=80', 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80'],
+     true, false, true, true),
+
+    ('Slim Fit Dress Trousers', 'slim-fit-dress-trousers', 1699, 1399, formal_wear_id, 25, 'FW-DTR-003',
+     'Tailored slim-fit dress trousers with crease detailing.',
+     'These expertly tailored dress trousers offer a modern slim fit with classic crease detailing. Made from a wool-polyester blend for shape retention, featuring a hook-and-bar closure, belt loops, and a clean hemmed finish.',
+     ARRAY['https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&q=80', 'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80'],
+     false, true, false, true),
+
+    ('Silk Necktie and Pocket Square Set', 'silk-necktie-pocket-square-set', 999, 799, formal_wear_id, 40, 'FW-TIE-004',
+     'Premium silk necktie with matching pocket square in gift box.',
+     'Complete your formal look with this premium silk necktie and matching pocket square. Features a rich satin finish, precise stitching, and comes beautifully presented in a gift box. Available in a range of sophisticated patterns.',
+     ARRAY['https://images.unsplash.com/photo-1589756823695-278bc923a84d?w=800&q=80', 'https://images.unsplash.com/photo-1598808503746-f34c53b9323e?w=800&q=80'],
+     true, false, false, true),
+
+    -- Accessories (additional)
+    ('Canvas Weekend Tote Bag', 'canvas-weekend-tote-bag', 1299, NULL, accessories_id, 30, 'AC-TOT-004',
+     'Spacious canvas tote with leather handles and zip top.',
+     'This versatile canvas tote bag is perfect for weekends, work, or travel. Features durable waxed canvas, reinforced leather handles, a secure zip-top closure, interior organizer pockets, and a detachable shoulder strap.',
+     ARRAY['https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&q=80', 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80'],
+     true, false, true, true);
+
+    RAISE NOTICE 'Successfully inserted 24 sample clothing products!';
 END $$;
