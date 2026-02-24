@@ -1,3 +1,4 @@
+import { useSliderSlides } from '@/hooks/useShopData';
 import {
     Shirt,
     Sparkles,
@@ -8,32 +9,46 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const BG_IMAGES = [
+const FALLBACK_IMAGES = [
   'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80',
   'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&q=80',
   'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80',
 ];
 
 export function HeroSlider() {
+  const { data: slides = [], isLoading } = useSliderSlides(true);
   const [current, setCurrent] = useState(0);
 
+  // Reset current index when slides change (e.g. after data loads)
+  useEffect(() => {
+    setCurrent(0);
+  }, [slides.length]);
+
   const next = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % BG_IMAGES.length);
-  }, []);
+    const total = slides.length || FALLBACK_IMAGES.length;
+    setCurrent((prev) => (prev + 1) % total);
+  }, [slides.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
   }, [next]);
 
+  // Derive background images and active slide content from Supabase data
+  const bgImages = slides.length > 0
+    ? slides.map((s) => s.image).filter(Boolean)
+    : FALLBACK_IMAGES;
+
+  const activeSlide = slides[current] ?? null;
+
   return (
     <section className="relative min-h-[420px] md:min-h-[500px] overflow-hidden">
       {/* Background Slider Images */}
-      {BG_IMAGES.map((src, i) => (
+      {bgImages.map((src, i) => (
         <img
           key={i}
           src={src}
-          alt={`Slide ${i + 1}`}
+          alt={slides[i]?.heading ?? `Slide ${i + 1}`}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
             i === current ? 'opacity-100 z-[1]' : 'opacity-0 z-0'
           }`}
@@ -51,20 +66,40 @@ export function HeroSlider() {
               <Sparkles className="h-4 w-4" />
               New Season Arrivals
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 tracking-tight leading-tight">
-              Discover Your <br />
-              <span className="text-accent">Perfect Style</span>
-            </h1>
-            <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-md mb-8">
-              Explore our curated collection of premium clothing for men, women,
-              and kids. Fashion that fits your lifestyle — delivered to your door.
-            </p>
+
+            {isLoading ? (
+              /* Loading skeleton for text */
+              <div className="space-y-3 mb-8">
+                <div className="h-10 w-3/4 bg-white/20 rounded-lg animate-pulse" />
+                <div className="h-10 w-1/2 bg-white/20 rounded-lg animate-pulse" />
+                <div className="h-5 w-full bg-white/10 rounded animate-pulse mt-4" />
+                <div className="h-5 w-4/5 bg-white/10 rounded animate-pulse" />
+              </div>
+            ) : (
+              <>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 tracking-tight leading-tight transition-all duration-500">
+                  {activeSlide?.heading ? (
+                    activeSlide.heading
+                  ) : (
+                    <>
+                      Discover Your <br />
+                      <span className="text-accent">Perfect Style</span>
+                    </>
+                  )}
+                </h1>
+                <p className="text-white/70 text-base md:text-lg leading-relaxed max-w-md mb-8 transition-all duration-500">
+                  {activeSlide?.text ||
+                    'Explore our curated collection of premium clothing for men, women, and kids. Fashion that fits your lifestyle — delivered to your door.'}
+                </p>
+              </>
+            )}
+
             <div className="flex flex-wrap gap-4">
               <Link
-                to="/shop"
+                to={activeSlide?.cta_link || '/shop'}
                 className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-3.5 rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-lg hover:shadow-xl"
               >
-                Shop Now
+                {activeSlide?.cta_text || 'Shop Now'}
               </Link>
               <Link
                 to="/categories"
@@ -76,7 +111,7 @@ export function HeroSlider() {
 
             {/* Slide Indicators */}
             <div className="flex gap-2 mt-8">
-              {BG_IMAGES.map((_, i) => (
+              {bgImages.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}

@@ -42,11 +42,11 @@ export default function ContactPage() {
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
-  const storePhone = '+8801622823164';
-  const storeEmail = 'info@sawlinslifestyle.com';
-  const storeAddress = 'Uttar Kauwakuri (UK)';
-  const storeCity = 'Madaripur Sadar, Madaripur, BD';
-  const whatsappNumber = '+8801622823164';
+  const storePhone = storeSettings?.store_phone || '+8801622823164';
+  const storeEmail = storeSettings?.store_email || 'info@sawlinslifestyle.com';
+  const storeAddress = storeSettings?.store_address || 'Uttar Kauwakuri (UK)';
+  const storeCity = storeSettings?.store_city || 'Madaripur Sadar, Madaripur, BD';
+  const whatsappNumber = storeSettings?.whatsapp_number || '+8801622823164';
   const fullAddress = [storeAddress, storeCity].filter(Boolean).join(', ');
 
   return (

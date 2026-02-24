@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useCart } from '@/contexts/CartContext';
@@ -81,7 +81,7 @@ export function Header() {
               <img 
                 src={storeLogo} 
                 alt={storeName} 
-                className="h-8 md:h-10 w-auto object-contain"
+                className="h-14 md:h-16 w-auto object-contain"
               />
             ) : (
               <span className="text-xl md:text-2xl font-bold tracking-tight">

@@ -39,6 +39,9 @@ export function Footer() {
   if (storeSettings?.youtube_url) {
     socialLinks.push({ name: 'YouTube', href: storeSettings.youtube_url, icon: Youtube });
   }
+  if (storeSettings?.tiktok_url) {
+    socialLinks.push({ name: 'TikTok', href: storeSettings.tiktok_url, icon: MessageCircle }); // Fallback to MessageCircle if Music icon is not available in current lucide version
+  }
 
   // Fallback if no social links configured
   if (socialLinks.length === 0) {
@@ -50,16 +53,15 @@ export function Footer() {
 
   const storeName = storeSettings?.store_name || "Sawlin's Lifestyle";
   const storeTagline = storeSettings?.store_tagline || t('home.heroSubtitle');
-  const storePhone = '+8801622823164';
-  const storeEmail = 'info@sawlinslifestyle.com';
-  const storeAddress = 'Uttar Kauwakuri (UK)';
-  const storeCity = 'Madaripur Sadar, Madaripur, BD';
+  const storePhone = storeSettings?.store_phone || '+8801622823164';
+  const storeEmail = storeSettings?.store_email || 'info@sawlinslifestyle.com';
+  const storeAddress = storeSettings?.store_address || 'Uttar Kauwakuri (UK)';
+  const storeCity = storeSettings?.store_city || 'Madaripur Sadar, Madaripur, BD';
   const footerText = storeSettings?.footer_text || '';
-  const whatsappNumber = '+8801622823164';
+  const whatsappNumber = storeSettings?.whatsapp_number || '+8801622823164';
 
   // Additional contact info
   const secondPhone = '+8801921386426';
-  const secondEmail = 'tginternational2022@gmail.com';
 
   const fullAddress = [storeAddress, storeCity].filter(Boolean).join(', ');
 
@@ -163,9 +165,6 @@ export function Footer() {
                   <div className="flex flex-col gap-1">
                     <a href={`mailto:${storeEmail}`} className="hover:text-primary-foreground">
                       {storeEmail}
-                    </a>
-                    <a href={`mailto:${secondEmail}`} className="hover:text-primary-foreground">
-                      {secondEmail}
                     </a>
                   </div>
                 </li>

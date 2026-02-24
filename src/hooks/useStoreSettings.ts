@@ -1,6 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export interface StoreSettings {
   store_name: string;
@@ -15,6 +14,7 @@ export interface StoreSettings {
   instagram_url: string;
   twitter_url: string;
   youtube_url: string;
+  tiktok_url: string;
   whatsapp_number: string;
   footer_text: string;
 }
@@ -32,6 +32,7 @@ const DEFAULT_STORE_SETTINGS: StoreSettings = {
   instagram_url: '',
   twitter_url: '',
   youtube_url: '',
+  tiktok_url: '',
   whatsapp_number: '',
   footer_text: '',
 };

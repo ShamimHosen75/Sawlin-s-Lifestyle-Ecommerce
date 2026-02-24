@@ -66,6 +66,7 @@ export default function AdminSettings() {
     instagram_url: '',
     twitter_url: '',
     youtube_url: '',
+    tiktok_url: '',
     whatsapp_number: '',
     footer_text: '',
   });
@@ -587,6 +588,16 @@ export default function AdminSettings() {
                     onChange={(e) => setStoreData({ ...storeData, youtube_url: e.target.value })}
                     className="input-shop"
                     placeholder="https://youtube.com/@yourstore"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">TikTok URL</label>
+                  <input
+                    type="url"
+                    value={storeData.tiktok_url}
+                    onChange={(e) => setStoreData({ ...storeData, tiktok_url: e.target.value })}
+                    className="input-shop"
+                    placeholder="https://tiktok.com/@yourstore"
                   />
                 </div>
                 <div className="md:col-span-2">
