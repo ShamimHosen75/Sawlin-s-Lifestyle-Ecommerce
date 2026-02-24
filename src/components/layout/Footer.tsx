@@ -55,8 +55,8 @@ export function Footer() {
   const storeTagline = storeSettings?.store_tagline || t('home.heroSubtitle');
   const storePhone = storeSettings?.store_phone || '+8801622823164';
   const storeEmail = storeSettings?.store_email || 'info@sawlinslifestyle.com';
-  const storeAddress = storeSettings?.store_address || 'Uttar Kauwakuri (UK)';
-  const storeCity = storeSettings?.store_city || 'Madaripur Sadar, Madaripur, BD';
+  const storeAddress = storeSettings?.store_address || 'Dhaka';
+  const storeCity = storeSettings?.store_city || 'Bangladesh';
   const footerText = storeSettings?.footer_text || '';
   const whatsappNumber = storeSettings?.whatsapp_number || '+8801622823164';
 

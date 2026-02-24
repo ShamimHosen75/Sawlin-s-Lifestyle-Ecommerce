@@ -44,8 +44,8 @@ export default function ContactPage() {
 
   const storePhone = storeSettings?.store_phone || '+8801622823164';
   const storeEmail = storeSettings?.store_email || 'info@sawlinslifestyle.com';
-  const storeAddress = storeSettings?.store_address || 'Uttar Kauwakuri (UK)';
-  const storeCity = storeSettings?.store_city || 'Madaripur Sadar, Madaripur, BD';
+  const storeAddress = storeSettings?.store_address || 'Dhaka';
+  const storeCity = storeSettings?.store_city || 'Bangladesh';
   const whatsappNumber = storeSettings?.whatsapp_number || '+8801622823164';
   const fullAddress = [storeAddress, storeCity].filter(Boolean).join(', ');
 
@@ -211,7 +211,7 @@ export default function ContactPage() {
             {/* Map */}
             <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm flex-1">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29416.82!2d90.19!3d23.17!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3754e6bce7e7e7e7%3A0x1234567890abcdef!2sMadaripur%20Sadar!5e0!3m2!1sen!2sbd!4v1706601234567!5m2!1sen!2sbd"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d233668.0639675276!2d90.35633099999999!3d23.7805733!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbcad5ca69!2sDhaka!5e0!3m2!1sen!2sbd!4v1706601234567!5m2!1sen!2sbd"
                 width="100%"
                 height="100%"
                 style={{ border: 0, minHeight: '300px' }}
