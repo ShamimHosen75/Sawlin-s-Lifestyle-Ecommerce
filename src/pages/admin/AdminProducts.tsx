@@ -63,6 +63,7 @@ export default function AdminProducts() {
     short_description: '',
     description: '',
     images: [] as string[],
+    specifications: [] as string[],
     is_new: false,
     is_best_seller: false,
     is_featured: false,
@@ -88,6 +89,7 @@ export default function AdminProducts() {
       short_description: product.short_description || '',
       description: product.description || '',
       images: product.images || [],
+      specifications: product.specifications || [],
       is_new: product.is_new || false,
       is_best_seller: product.is_best_seller || false,
       is_featured: product.is_featured || false,
@@ -121,6 +123,7 @@ export default function AdminProducts() {
       short_description: formData.short_description || null,
       description: formData.description || null,
       images: formData.images,
+      specifications: formData.specifications.filter(s => s.trim() !== ''),
       is_new: formData.is_new,
       is_best_seller: formData.is_best_seller,
       is_featured: formData.is_featured,
@@ -152,6 +155,7 @@ export default function AdminProducts() {
       short_description: '',
       description: '',
       images: [],
+      specifications: [],
       is_new: false,
       is_best_seller: false,
       is_featured: false,
@@ -294,6 +298,15 @@ export default function AdminProducts() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="input-shop min-h-[100px]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Specifications (one per line)</label>
+                <textarea
+                  value={formData.specifications.join('\n')}
+                  onChange={(e) => setFormData({ ...formData, specifications: e.target.value.split('\n') })}
+                  className="input-shop min-h-[100px]"
+                  placeholder={"Fabrics: Imported Cotton\nSize: M/38 & Long: 38-39\nSleeve length: 20\""}
                 />
               </div>
               <div>

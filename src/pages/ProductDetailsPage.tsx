@@ -280,6 +280,7 @@ export default function ProductDetailsPage() {
                 ))}
               </div>
             )}
+
           </div>
 
           {/* Details */}
@@ -319,12 +320,13 @@ export default function ProductDetailsPage() {
               </div>
             </div>
 
-            {/* Variant Selector */}
-            {hasVariants && (
+            {/* Variant Selector & Specifications */}
+            {(hasVariants || (product.specifications && product.specifications.length > 0)) && (
               <VariantSelector
-                variants={variants.filter(v => v.is_active)}
-                selectedVariant={selectedVariant}
+                variants={hasVariants ? variants.filter(v => v.is_active) : []}
+                selectedVariant={hasVariants ? selectedVariant : null}
                 onSelect={setSelectedVariant}
+                specifications={product.specifications}
               />
             )}
 

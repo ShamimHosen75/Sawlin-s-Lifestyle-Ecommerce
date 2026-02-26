@@ -1,8 +1,8 @@
 import {
-  categories as mockCategories,
-  products as mockProducts,
-  reviews as mockReviews,
-  sliderSlides as mockSliderSlides,
+    categories as mockCategories,
+    products as mockProducts,
+    reviews as mockReviews,
+    sliderSlides as mockSliderSlides,
 } from '@/data/products';
 import { supabase } from '@/integrations/supabase/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -27,6 +27,7 @@ export interface Product {
   created_at: string;
   updated_at: string;
   has_variants?: boolean;
+  specifications?: string[];
 }
 
 export interface Category {
