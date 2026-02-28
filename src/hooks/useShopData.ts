@@ -28,6 +28,7 @@ export interface Product {
   updated_at: string;
   has_variants?: boolean;
   specifications?: string[];
+  gallery_images?: string[];
 }
 
 export interface Category {
@@ -97,6 +98,7 @@ function adaptMockProducts(): (Product & { category: Category | null })[] {
       short_description: p.shortDescription,
       description: p.description,
       images: p.images,
+      gallery_images: [],
       is_new: p.isNew ?? false,
       is_best_seller: p.isBestSeller ?? false,
       is_featured: p.isFeatured ?? false,

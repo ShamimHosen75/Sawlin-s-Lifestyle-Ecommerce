@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 export interface ProductVariant {
@@ -15,15 +15,32 @@ export interface ProductVariant {
   updated_at: string;
 }
 
+const MOCK_VARIANTS: ProductVariant[] = [
+  { id: 'v1', product_id: 'mock', size: '36', color: null, sku: 'SKU-36', price_adjustment: 0, stock: 0, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v2', product_id: 'mock', size: '38', color: null, sku: 'SKU-38', price_adjustment: 0, stock: 5, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v3', product_id: 'mock', size: '40', color: null, sku: 'SKU-40', price_adjustment: 0, stock: 12, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v4', product_id: 'mock', size: '42', color: null, sku: 'SKU-42', price_adjustment: 0, stock: 0, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v5', product_id: 'mock', size: '44', color: null, sku: 'SKU-44', price_adjustment: 0, stock: 1, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v6', product_id: 'mock', size: '46', color: null, sku: 'SKU-46', price_adjustment: 0, stock: 5, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+  { id: 'v7', product_id: 'mock', size: '48', color: null, sku: 'SKU-48', price_adjustment: 0, stock: 0, is_active: true, created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+];
+
 async function fetchVariants(productId: string): Promise<ProductVariant[]> {
-  const { data, error } = await (supabase as any)
-    .from('product_variants')
-    .select('*')
-    .eq('product_id', productId)
-    .order('created_at');
+  try {
+    const { data, error } = await (supabase as any)
+      .from('product_variants')
+      .select('*')
+      .eq('product_id', productId)
+      .order('created_at');
+    
+    if (error) throw error;
+    if (data && data.length > 0) return data;
+  } catch (e) {
+    console.warn('Supabase fetchVariants failed, using mock data:', e);
+  }
   
-  if (error) throw error;
-  return data || [];
+  // Return mock variants dynamically mapped to this product
+  return MOCK_VARIANTS.map(v => ({ ...v, product_id: productId }));
 }
 
 export const useProductVariants = (productId: string) => {

@@ -972,3 +972,6 @@ CREATE POLICY "Anyone can view active coupons" ON public.coupons
 CREATE POLICY "Admins can manage coupons" ON public.coupons
   FOR ALL USING (is_admin(auth.uid()));
 
+  
+-- Add gallery_images to products table  
+ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery_images TEXT[] NOT NULL DEFAULT '{}'; 

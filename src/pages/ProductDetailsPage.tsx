@@ -424,6 +424,29 @@ export default function ProductDetailsPage() {
           </div>
         </div>
 
+        {/* Gallery Section */}
+        {product.gallery_images && product.gallery_images.length > 0 && (
+          <section className="mt-16 pt-12 border-t border-border">
+            <h2 className="text-2xl font-bold mb-8">Gallery</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {product.gallery_images.map((image, index) => (
+                <div key={index} className="aspect-square rounded-xl overflow-hidden bg-secondary border border-border">
+                  <img
+                    src={image}
+                    alt={`${product.name} Gallery ${index + 1}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = '/placeholder.svg';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section className="mt-16 pt-12 border-t border-border">

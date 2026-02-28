@@ -1,5 +1,4 @@
 import { MultiImageUpload } from '@/components/admin/ImageUpload';
-import { ProductVariantManager } from '@/components/admin/ProductVariantManager';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -32,7 +31,8 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Product, useCategories, useCreateProduct, useDeleteProduct, useProducts, useUpdateProduct } from '@/hooks/useShopData';
-import { Edit, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Edit, GripVertical, MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -60,14 +60,15 @@ export default function AdminProducts() {
     category_id: '',
     stock: '0',
     sku: '',
-    short_description: '',
     description: '',
     images: [] as string[],
+    gallery_images: [] as string[],
     specifications: [] as string[],
     is_new: false,
     is_best_seller: false,
     is_featured: false,
     is_active: true,
+    variants: [] as { id?: string; size: string; stock: string; price_adjustment: string }[],
   });
 
   const filteredProducts = products.filter(
@@ -76,7 +77,7 @@ export default function AdminProducts() {
       p.sku.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = async (product: Product) => {
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -86,16 +87,35 @@ export default function AdminProducts() {
       category_id: product.category_id || '',
       stock: product.stock.toString(),
       sku: product.sku,
-      short_description: product.short_description || '',
       description: product.description || '',
       images: product.images || [],
+      gallery_images: product.gallery_images || [],
       specifications: product.specifications || [],
       is_new: product.is_new || false,
       is_best_seller: product.is_best_seller || false,
       is_featured: product.is_featured || false,
       is_active: (product as any).is_active ?? true,
+      variants: [], // Will load just after
     });
     setIsDialogOpen(true);
+    
+    // Fetch variants inline
+    try {
+      const { data } = await supabase.from('product_variants').select('*').eq('product_id', product.id);
+      if (data) {
+        setFormData(prev => ({
+          ...prev,
+          variants: data.map(v => ({
+            id: v.id,
+            size: v.size || '',
+            stock: v.stock.toString(),
+            price_adjustment: (v.price_adjustment || 0).toString()
+          }))
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleDelete = async () => {
@@ -119,10 +139,10 @@ export default function AdminProducts() {
       sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
       category_id: formData.category_id || null,
       stock: parseInt(formData.stock),
-      sku: formData.sku,
       short_description: formData.short_description || null,
       description: formData.description || null,
       images: formData.images,
+      gallery_images: formData.gallery_images,
       specifications: formData.specifications.filter(s => s.trim() !== ''),
       is_new: formData.is_new,
       is_best_seller: formData.is_best_seller,
@@ -130,11 +150,37 @@ export default function AdminProducts() {
     };
 
     try {
+      let createdOrUpdatedProduct: Product | undefined;
+      
       if (editingProduct) {
-        await updateProduct.mutateAsync({ id: editingProduct.id, ...productData });
+        createdOrUpdatedProduct = await updateProduct.mutateAsync({ id: editingProduct.id, ...productData });
       } else {
-        await createProduct.mutateAsync(productData as any);
+        createdOrUpdatedProduct = await createProduct.mutateAsync(productData as any);
       }
+      
+      const targetProductId = editingProduct?.id || createdOrUpdatedProduct?.id;
+      
+      // Upsert inline variations if we have a target product ID
+      if (targetProductId) {
+        // Delete existing variations to recreate them cleanly (simple method)
+        await supabase.from('product_variants').delete().eq('product_id', targetProductId);
+        
+        const validVariantsToInsert = formData.variants
+          .filter(v => v.size.trim() !== '' && v.stock.trim() !== '')
+          .map(v => ({
+            product_id: targetProductId,
+            size: v.size,
+            sku: formData.sku + '-' + v.size.toUpperCase().replace(/\s+/g, '-'), // Auto append SKU
+            stock: parseInt(v.stock) || 0,
+            price_adjustment: parseFloat(v.price_adjustment) || 0,
+            is_active: true
+          }));
+          
+        if (validVariantsToInsert.length > 0) {
+          await supabase.from('product_variants').insert(validVariantsToInsert);
+        }
+      }
+      
       setIsDialogOpen(false);
       setEditingProduct(null);
       resetForm();
@@ -152,14 +198,15 @@ export default function AdminProducts() {
       category_id: '',
       stock: '0',
       sku: '',
-      short_description: '',
       description: '',
       images: [],
+      gallery_images: [],
       specifications: [],
       is_new: false,
       is_best_seller: false,
       is_featured: false,
       is_active: true,
+      variants: [],
     });
   };
 
@@ -283,6 +330,98 @@ export default function AdminProducts() {
                   />
                 </div>
               </div>
+              
+              {/* Size Variations Inline Map */}
+              <div className="border border-border rounded-lg p-4 bg-muted/20">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-sm font-semibold">Size Variations (Optional)</h3>
+                    <p className="text-xs text-muted-foreground mt-1">Add specific sizes and their individual stock count</p>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setFormData(prev => ({ ...prev, variants: [...prev.variants, { size: '', stock: '0', price_adjustment: '0' }] }))}
+                  >
+                    <Plus className="h-4 w-4 mr-2" /> Add Size
+                  </Button>
+                </div>
+                
+                {formData.variants.length > 0 ? (
+                  <div className="space-y-3">
+                    {formData.variants.map((variant, index) => (
+                      <div key={index} className="flex items-center gap-3 bg-card p-3 rounded border shadow-sm">
+                        <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab opacity-50" />
+                        
+                        <div className="flex-1">
+                          <label className="text-xs text-muted-foreground mb-1 block">Size</label>
+                          <input
+                            type="text"
+                            value={variant.size}
+                            placeholder="e.g. 36, 38, L"
+                            className="input-shop !py-2 text-sm"
+                            onChange={(e) => {
+                              const newVariants = [...formData.variants];
+                              newVariants[index].size = e.target.value;
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                          />
+                        </div>
+                        
+                        <div className="w-24">
+                          <label className="text-xs text-muted-foreground mb-1 block">Stock</label>
+                          <input
+                            type="number"
+                            value={variant.stock}
+                            className="input-shop !py-2 text-sm"
+                            onChange={(e) => {
+                              const newVariants = [...formData.variants];
+                              newVariants[index].stock = e.target.value;
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                          />
+                        </div>
+                        
+                        <div className="w-24">
+                          <label className="text-xs text-muted-foreground mb-1 block">Price Adj +/-</label>
+                          <input
+                            type="number"
+                            value={variant.price_adjustment}
+                            className="input-shop !py-2 text-sm"
+                            onChange={(e) => {
+                              const newVariants = [...formData.variants];
+                              newVariants[index].price_adjustment = e.target.value;
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                          />
+                        </div>
+                        
+                        <div className="pt-5">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10 h-9 w-9"
+                            onClick={() => {
+                              const newVariants = [...formData.variants];
+                              newVariants.splice(index, 1);
+                              setFormData({ ...formData, variants: newVariants });
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-center py-6 text-muted-foreground border-2 border-dashed rounded bg-background/50">
+                    No sizes added. The product will have no size options.
+                  </div>
+                )}
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium mb-2">Short Description</label>
                 <input
@@ -318,6 +457,17 @@ export default function AdminProducts() {
                   onChange={(urls) => setFormData({ ...formData, images: urls })}
                   folder="products"
                   maxImages={5}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Gallery Images
+                </label>
+                <MultiImageUpload
+                  values={formData.gallery_images}
+                  onChange={(urls) => setFormData({ ...formData, gallery_images: urls })}
+                  folder="products/gallery"
+                  maxImages={10}
                 />
               </div>
               <div className="flex flex-wrap gap-4">
@@ -362,16 +512,6 @@ export default function AdminProducts() {
                 </Button>
               </div>
             </form>
-
-            {/* Product Variants Manager */}
-            {editingProduct && (
-              <div className="mt-8 pt-8 border-t border-border">
-                <ProductVariantManager
-                  productId={editingProduct.id}
-                  productName={editingProduct.name}
-                />
-              </div>
-            )}
           </DialogContent>
         </Dialog>
       </div>
